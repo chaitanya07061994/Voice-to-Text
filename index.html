@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Voice-to-Text Wizard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      text-align: center;
+      width: 400px;
+    }
+
+    #logo {
+      display: block;
+      width: 80px;
+      height: auto;
+      margin: 20px auto;
+    }
+
+    h1 {
+      font-family: 'Montserrat', sans-serif;
+      color: #009688; /* Teal color */
+      font-size: 36px;
+      margin-bottom: 20px;
+    }
+
+    button {
+      background-color: #007bff;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      cursor: pointer;
+      font-size: 16px;
+      margin: 10px;
+      padding: 10px 20px;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #output {
+      margin-top: 20px;
+      white-space: pre-line;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #f7f7f7;
+      text-align: left;
+    }
+
+    #hint {
+      margin-top: 10px;
+      font-style: italic;
+      color: #888888;
+    }
+
+    .container::before {
+      content: '\f130';
+      font-family: "Font Awesome 5 Free";
+      font-weight: 900;
+      font-size: 60px;
+      color: #007bff;
+      display: block;
+      margin: 20px auto;
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <img id="logo" src="C:\Users\HP\OneDrive\Desktop\logo.png" alt="Logo">
+    <h1>Welcome to the Voice-to-Text Wizard</h1>
+    <button id="startBtn">Start Recording</button>
+    <button id="stopBtn" disabled>Stop Recording</button>
+    <div id="hint"></div>
+    <div id="output"></div>
+  </div>
+  <script>
+    const startBtn = document.getElementById('startBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const hint = document.getElementById('hint');
+    const output = document.getElementById('output');
+
+    let recognition = new webkitSpeechRecognition() || new SpeechRecognition();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+
+    recognition.onstart = () => {
+      startBtn.disabled = true;
+      stopBtn.disabled = false;
+      hint.textContent = "Listening...";
+    };
+
+    recognition.onend = () => {
+      startBtn.disabled = false;
+      stopBtn.disabled = true;
+      hint.textContent = "";
+    };
+
+    recognition.onresult = (event) => {
+      let transcript = '';
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        if (event.results[i].isFinal) {
+          transcript += event.results[i][0].transcript;
+        }
+      }
+      output.textContent = transcript;
+    };
+
+    startBtn.addEventListener('click', () => {
+      recognition.start();
+    });
+
+    stopBtn.addEventListener('click', () => {
+      recognition.stop();
+    });
+  </script>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</body>
+</html>
